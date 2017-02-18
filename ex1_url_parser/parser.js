@@ -14,13 +14,7 @@ function render(uriParts) {
 }
 
 
-// Mao ni trish 
 function parseUri(uri) {
-    var url = document.createElement('a');
-    url.href = uri;
-    console.log(uri.substr(1, 4));
-
-
     var scheme = uri.substring(0, uri.indexOf(":"));
     var authority = "";
     var path = "";
@@ -63,7 +57,7 @@ function parseUri(uri) {
     } else {
         authority = uri;
     }
-    console.log(uri);
+    
     var uriParts = {
         scheme: scheme,
         authority: authority,
