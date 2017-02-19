@@ -32,24 +32,10 @@ function parseUri(uri) {
         uri = uri.substring(uri.indexOf("/"));
         if(uri.lastIndexOf("/") == uri.indexOf("/")){
             if(uri.indexOf("#") >= 0 || uri.indexOf("?") >= 0){
-                var star_idx = uri.indexOf("#");
-                var quest_idx = uri.indexOf("?");
-                if(star_idx >= 0 && quest_idx >= 0){
-                    if(star_idx < quest_idx){
-                      path = uri.substring(0, uri.indexOf("#")); 
-                      fragment = uri.substring(uri.indexOf("#") + 1);
-                    } else {
-                      path = uri.substring(0, uri.indexOf("?")); 
-                      query = uri.substring(quest_idx + 1, star_idx);
-                      fragment = uri.substring(star_idx + 1);
-                    }
-                } else if(star_idx >= 0){
-                    path = uri.substring(0, uri.indexOf("#")); 
-                    fragment = uri.substring(uri.indexOf("#") + 1);
-                } else if(quest_idx >= 0){
-                    path = uri.substring(0, uri.indexOf("?")); 
-                    query = uri.substring(uri.indexOf("?") + 1);
-                }
+                var res = checkFragmentAndQuery(uri);
+                path = res.part;
+                fragment = res.fragment;
+                query = res.query;
             } else {
                 path = uri;
             }
@@ -57,47 +43,18 @@ function parseUri(uri) {
             if(uri.lastIndexOf("/") == uri.length - 1 || (uri.indexOf("#") < 0 && uri.indexOf("?") < 0)){
                 path = uri;
             } else {
-                var star_idx = uri.indexOf("#");
-                var quest_idx = uri.indexOf("?");
-                if(star_idx >= 0 && quest_idx >= 0){
-                    if(star_idx < quest_idx){ 
-                      fragment = uri.substring(uri.indexOf("#") + 1);
-                      path = uri.substring(0, uri.indexOf("#"));
-                    } else {
-                      path = uri.substring(0, uri.indexOf("?"));
-                      query = uri.substring(quest_idx + 1, star_idx);
-                      fragment = uri.substring(star_idx + 1);
-
-                    }
-                } else if(star_idx >= 0){
-                    path = uri.substring(0, uri.indexOf("#"));
-                    fragment = uri.substring(uri.indexOf("#") + 1);
-                } else if(quest_idx >= 0){
-                    path = uri.substring(0, uri.indexOf("?"));
-                    query = uri.substring(uri.indexOf("?") + 1);
-                }
+                var res = checkFragmentAndQuery(uri);
+                path = res.part;
+                fragment = res.fragment;
+                query = res.query;
             }
         }
     } else {
         if(uri.indexOf("#") >= 0 || uri.indexOf("?") >= 0){ 
-            var star_idx = uri.indexOf("#");
-            var quest_idx = uri.indexOf("?");
-            if(star_idx >= 0 && quest_idx >= 0){
-                if(star_idx < quest_idx){
-                  authority = uri.substring(0, uri.indexOf("#")); 
-                  fragment = uri.substring(uri.indexOf("#") + 1);
-                } else {
-                  authority = uri.substring(0, uri.indexOf("?")); 
-                  query = uri.substring(quest_idx + 1, star_idx);
-                  fragment = uri.substring(star_idx + 1);
-                }
-            } else if(star_idx >= 0){
-                authority = uri.substring(0, uri.indexOf("#")); 
-                fragment = uri.substring(uri.indexOf("#") + 1);
-            } else if(quest_idx >= 0){
-                authority = uri.substring(0, uri.indexOf("?")); 
-                query = uri.substring(uri.indexOf("?") + 1);
-            }
+            var res = checkFragmentAndQuery(uri);
+            authority = res.part;
+            fragment = res.fragment;
+            query = res.query;
         } else {
             authority = uri;
         }
@@ -113,4 +70,33 @@ function parseUri(uri) {
     };
 
     return uriParts;
+}
+
+
+function checkFragmentAndQuery(uri){
+    var parts = {
+        part : "",
+        fragment : "",
+        query : ""
+    };
+    var star_idx = uri.indexOf("#");
+    var quest_idx = uri.indexOf("?");
+    if(star_idx >= 0 && quest_idx >= 0){
+        if(star_idx < quest_idx){
+          parts.part = uri.substring(0, uri.indexOf("#")); 
+          parts.fragment = uri.substring(uri.indexOf("#") + 1);
+        } else {
+          parts.part = uri.substring(0, uri.indexOf("?")); 
+          parts.query = uri.substring(quest_idx + 1, star_idx);
+          parts.fragment = uri.substring(star_idx + 1);
+        }
+    } else if(star_idx >= 0){
+        parts.part = uri.substring(0, uri.indexOf("#")); 
+        parts.fragment = uri.substring(uri.indexOf("#") + 1);
+    } else if(quest_idx >= 0){
+        parts.part = uri.substring(0, uri.indexOf("?")); 
+        parts.query = uri.substring(uri.indexOf("?") + 1);
+    }
+
+    return parts;
 }
